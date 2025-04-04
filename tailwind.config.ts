@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -52,6 +53,14 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
+				// Bakery theme colors
+				bakery: {
+					pink: '#FFDEE2',
+					peach: '#FDE1D3',
+					mint: '#F2FCE2',
+					lavender: '#E5DEFF',
+					yellow: '#FEF7CD',
+				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',
@@ -84,11 +93,35 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'cake-eaten': {
+					'0%': { transform: 'scale(1)', opacity: '1' },
+					'50%': { transform: 'scale(0.8) rotate(10deg)', opacity: '0.5' },
+					'100%': { transform: 'scale(0)', opacity: '0' }
+				},
+				'cake-rot': {
+					'0%': { filter: 'saturate(1)', opacity: '1' },
+					'50%': { filter: 'saturate(0.5) hue-rotate(-30deg)', opacity: '0.7' },
+					'100%': { filter: 'saturate(0) hue-rotate(-60deg)', opacity: '0' }
+				},
+				'bounce-in': {
+					'0%': { transform: 'scale(0.8)', opacity: '0' },
+					'70%': { transform: 'scale(1.1)', opacity: '1' },
+					'100%': { transform: 'scale(1)', opacity: '1' }
+				},
+				'float': {
+					'0%': { transform: 'translateY(0px)' },
+					'50%': { transform: 'translateY(-10px)' },
+					'100%': { transform: 'translateY(0px)' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'cake-eaten': 'cake-eaten 0.7s ease-out forwards',
+				'cake-rot': 'cake-rot 1s ease-out forwards',
+				'bounce-in': 'bounce-in 0.5s ease-out',
+				'float': 'float 3s ease-in-out infinite'
 			}
 		}
 	},
