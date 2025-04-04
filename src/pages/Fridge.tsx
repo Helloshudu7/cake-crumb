@@ -1,9 +1,8 @@
-
 import { useState } from "react";
 import { useAppContext } from "@/context/AppContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
-import { Fridge as FridgeIcon, Check, Trash2, Calendar, SlidersHorizontal } from "lucide-react";
+import { RefrigeratorIcon, Check, Trash2, Calendar, SlidersHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { 
   Select,
@@ -20,12 +19,9 @@ const Fridge = () => {
   const [period, setPeriod] = useState<FilterPeriod>("today");
   const [flavorFilter, setFlavorFilter] = useState<string>("all");
 
-  // Filter completed tasks
   const completedTasks = tasks.filter(task => task.completed);
-  // Filter deleted tasks
   const deletedTasks = tasks.filter(task => task.deleted);
 
-  // Apply time filter
   const getFilteredTasks = (taskList: typeof tasks, period: FilterPeriod) => {
     const now = new Date();
     const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -34,7 +30,6 @@ const Fridge = () => {
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
     return taskList.filter(task => {
-      // First apply flavor filter
       if (flavorFilter !== "all" && task.flavorId !== flavorFilter) {
         return false;
       }
@@ -62,7 +57,6 @@ const Fridge = () => {
   const filteredCompletedTasks = getFilteredTasks(completedTasks, period);
   const filteredDeletedTasks = getFilteredTasks(deletedTasks, period);
 
-  // Group tasks by flavor
   const groupByFlavor = (taskList: typeof tasks) => {
     const groups: Record<string, typeof tasks> = {};
     
@@ -117,7 +111,7 @@ const Fridge = () => {
       <div className="dashboard-section mb-6">
         <div className="flex flex-col sm:flex-row justify-between items-center mb-4">
           <h2 className="text-xl font-bold flex items-center mb-2 sm:mb-0">
-            <FridgeIcon className="mr-2" />
+            <RefrigeratorIcon className="mr-2" />
             Fridge Contents
           </h2>
 
@@ -271,7 +265,6 @@ const Fridge = () => {
   );
 };
 
-// Helper components and functions
 const TaskItem = ({ task, flavor, icon }: { 
   task: any, 
   flavor: any, 

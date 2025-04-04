@@ -1,6 +1,6 @@
 
 import { Link, useLocation } from "react-router-dom";
-import { Cake, Home, Fridge, ShoppingBag, Gift, Coins } from "lucide-react";
+import { Cake, Home, RefrigeratorIcon, ShoppingBag, Gift, Coins } from "lucide-react";
 import { useAppContext } from "@/context/AppContext";
 
 const Navbar = () => {
@@ -21,7 +21,7 @@ const Navbar = () => {
         
         <nav className="hidden md:flex items-center space-x-1">
           <NavLink to="/" isActive={isActive("/")} icon={<Home size={20} />} label="Tasks" />
-          <NavLink to="/fridge" isActive={isActive("/fridge")} icon={<Fridge size={20} />} label="Fridge" />
+          <NavLink to="/fridge" isActive={isActive("/fridge")} icon={<RefrigeratorIcon size={20} />} label="Fridge" />
           <NavLink to="/bakery" isActive={isActive("/bakery")} icon={<ShoppingBag size={20} />} label="Bakery" />
           <NavLink to="/rewards" isActive={isActive("/rewards")} icon={<Gift size={20} />} label="Rewards" />
         </nav>
@@ -43,7 +43,7 @@ const Navbar = () => {
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-bakery-pink p-2 md:hidden z-40">
         <div className="flex justify-around">
           <MobileNavLink to="/" isActive={isActive("/")} icon={<Home size={20} />} label="Tasks" />
-          <MobileNavLink to="/fridge" isActive={isActive("/fridge")} icon={<Fridge size={20} />} label="Fridge" />
+          <MobileNavLink to="/fridge" isActive={isActive("/fridge")} icon={<RefrigeratorIcon size={20} />} label="Fridge" />
           <MobileNavLink to="/bakery" isActive={isActive("/bakery")} icon={<ShoppingBag size={20} />} label="Bakery" />
           <MobileNavLink to="/rewards" isActive={isActive("/rewards")} icon={<Gift size={20} />} label="Rewards" />
         </div>
