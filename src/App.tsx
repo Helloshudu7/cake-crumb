@@ -10,6 +10,7 @@ import Dashboard from "./pages/Dashboard";
 import Fridge from "./pages/Fridge";
 import Bakery from "./pages/Bakery";
 import Rewards from "./pages/Rewards";
+import Achievements from "./pages/Achievements";
 import Layout from "./components/Layout";
 import NotFound from "./pages/NotFound";
 
@@ -28,6 +29,7 @@ const App = () => (
               <Route path="fridge" element={<Fridge />} />
               <Route path="bakery" element={<Bakery />} />
               <Route path="rewards" element={<Rewards />} />
+              <Route path="achievements" element={<Achievements />} />
               <Route path="*" element={<NotFound />} />
             </Route>
           </Routes>

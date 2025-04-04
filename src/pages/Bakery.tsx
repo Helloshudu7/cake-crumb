@@ -5,6 +5,7 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ShoppingBag, Check, Cake, AlertTriangle, Info, Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { Progress } from "@/components/ui/progress";
 import {
   Tooltip,
   TooltipContent,
@@ -44,6 +45,10 @@ const Bakery = () => {
       price: 0,
     },
   });
+  
+  const ownedFlavors = cakeFlavors.filter(f => f.owned).length;
+  const totalFlavors = cakeFlavors.length;
+  const collectionProgress = Math.round((ownedFlavors / totalFlavors) * 100);
   
   const handlePurchase = (id: string) => {
     const flavor = cakeFlavors.find(f => f.id === id);
@@ -95,6 +100,14 @@ const Bakery = () => {
           <span className="text-pink-500 mr-2">🍓</span>
           <span className="font-bold">{berries} Berries Available</span>
         </div>
+      </div>
+      
+      <div className="max-w-md mx-auto mb-8">
+        <div className="flex justify-between text-sm mb-1">
+          <span>Flavor Collection</span>
+          <span>{ownedFlavors} / {totalFlavors}</span>
+        </div>
+        <Progress value={collectionProgress} className="h-3" />
       </div>
       
       <div className="dashboard-section">

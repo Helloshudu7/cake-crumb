@@ -3,7 +3,8 @@ import { useState } from "react";
 import { useAppContext } from "@/context/AppContext";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Gift, Coins, PartyPopper, AlertTriangle, Plus } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
+import { Gift, Coins, PartyPopper, AlertTriangle, Plus, Star } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import {
   Dialog,
@@ -28,7 +29,7 @@ const addRewardSchema = z.object({
 });
 
 const Rewards = () => {
-  const { rewards, coins, purchaseReward, addCustomReward } = useAppContext();
+  const { rewards, coins, purchaseReward, addCustomReward, userStats } = useAppContext();
   const { toast } = useToast();
   const [redeemingReward, setRedeemingReward] = useState<any | null>(null);
   const [showDialog, setShowDialog] = useState(false);
@@ -43,6 +44,9 @@ const Rewards = () => {
       image: "🎁",
     },
   });
+  
+  // Experience to next level progress
+  const levelProgress = Math.round((userStats.experience / userStats.experienceToNextLevel) * 100);
   
   const handlePurchase = (id: string) => {
     const reward = rewards.find(r => r.id === id);
@@ -94,6 +98,20 @@ const Rewards = () => {
           <Coins size={16} className="text-amber-500 mr-2" />
           <span className="font-bold">{coins} Coins Available</span>
         </div>
+      </div>
+      
+      <div className="max-w-md mx-auto mb-8">
+        <div className="flex justify-between items-center text-sm mb-1">
+          <div className="flex items-center gap-1">
+            <Star size={14} className="text-amber-500" />
+            <span>Level {userStats.level}</span>
+          </div>
+          <span>XP: {userStats.experience} / {userStats.experienceToNextLevel}</span>
+        </div>
+        <Progress value={levelProgress} className="h-3" />
+        <p className="text-xs text-center mt-1 text-muted-foreground">
+          Level up to earn bonus coins and berries!
+        </p>
       </div>
       
       <div className="dashboard-section">

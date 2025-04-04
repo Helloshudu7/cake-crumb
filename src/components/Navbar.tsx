@@ -1,6 +1,8 @@
 
 import { Link, useLocation } from "react-router-dom";
-import { Cake, Home, RefrigeratorIcon, ShoppingBag, Gift, Coins } from "lucide-react";
+import { Cake, Home, ShoppingBag, Refrigerator, Award } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { useAppContext } from "@/context/AppContext";
 
 const Navbar = () => {
@@ -11,71 +13,79 @@ const Navbar = () => {
     return location.pathname === path;
   };
   
+  const navLinks = [
+    { path: "/", label: "Dashboard", icon: Home },
+    { path: "/fridge", label: "Fridge", icon: Refrigerator },
+    { path: "/bakery", label: "Bakery", icon: Cake },
+    { path: "/rewards", label: "Rewards", icon: ShoppingBag },
+    { path: "/achievements", label: "Achievements", icon: Award },
+  ];
+  
   return (
-    <header className="py-3 px-4 bg-white bg-opacity-80 backdrop-blur-sm border-b border-bakery-pink shadow-sm">
-      <div className="container mx-auto flex justify-between items-center">
-        <div className="flex items-center gap-3">
-          <Cake className="h-8 w-8 text-primary" />
-          <h1 className="text-2xl font-bold text-primary">CakeCrumb</h1>
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container flex h-14 items-center">
+        <div className="mr-4 hidden md:flex">
+          <Link to="/" className="mr-6 flex items-center space-x-2">
+            <Cake className="h-6 w-6" />
+            <span className="hidden font-bold sm:inline-block">
+              CakeCrumb
+            </span>
+          </Link>
+          
+          <nav className="flex items-center space-x-4 text-sm font-medium">
+            {navLinks.map((link) => (
+              <Link
+                key={link.path}
+                to={link.path}
+                className={cn(
+                  "transition-colors hover:text-foreground/80",
+                  isActive(link.path) ? "text-foreground" : "text-foreground/60"
+                )}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
         </div>
         
-        <nav className="hidden md:flex items-center space-x-1">
-          <NavLink to="/" isActive={isActive("/")} icon={<Home size={20} />} label="Tasks" />
-          <NavLink to="/fridge" isActive={isActive("/fridge")} icon={<RefrigeratorIcon size={20} />} label="Fridge" />
-          <NavLink to="/bakery" isActive={isActive("/bakery")} icon={<ShoppingBag size={20} />} label="Bakery" />
-          <NavLink to="/rewards" isActive={isActive("/rewards")} icon={<Gift size={20} />} label="Rewards" />
-        </nav>
-        
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-1 bg-bakery-yellow px-3 py-1 rounded-full">
-            <Coins size={16} className="text-amber-500" />
-            <span className="font-medium">{coins}</span>
-          </div>
-          
-          <div className="flex items-center gap-1 bg-bakery-pink px-3 py-1 rounded-full">
-            <span className="text-pink-500">🍓</span>
-            <span className="font-medium">{berries}</span>
+        <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
+          <div className="w-full flex-1 md:w-auto md:flex-none">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center px-3 py-1 rounded-full bg-bakery-yellow/20">
+                <span className="text-amber-500 mr-1">💰</span>
+                <span className="text-sm font-medium">{coins}</span>
+              </div>
+              
+              <div className="flex items-center px-3 py-1 rounded-full bg-bakery-pink/20">
+                <span className="text-pink-500 mr-1">🍓</span>
+                <span className="text-sm font-medium">{berries}</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
       
-      {/* Mobile Navigation Bar at the bottom */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-bakery-pink p-2 md:hidden z-40">
-        <div className="flex justify-around">
-          <MobileNavLink to="/" isActive={isActive("/")} icon={<Home size={20} />} label="Tasks" />
-          <MobileNavLink to="/fridge" isActive={isActive("/fridge")} icon={<RefrigeratorIcon size={20} />} label="Fridge" />
-          <MobileNavLink to="/bakery" isActive={isActive("/bakery")} icon={<ShoppingBag size={20} />} label="Bakery" />
-          <MobileNavLink to="/rewards" isActive={isActive("/rewards")} icon={<Gift size={20} />} label="Rewards" />
+      <nav className="md:hidden">
+        <div className="flex items-center justify-around pb-2">
+          {navLinks.map((link) => (
+            <Link key={link.path} to={link.path}>
+              <Button
+                variant="ghost"
+                size="icon"
+                className={cn(
+                  "flex flex-col items-center justify-center h-auto py-2 gap-1",
+                  isActive(link.path) ? "text-primary bg-primary/10" : ""
+                )}
+              >
+                <link.icon size={18} />
+                <span className="text-xs">{link.label}</span>
+              </Button>
+            </Link>
+          ))}
         </div>
-      </div>
+      </nav>
     </header>
   );
 };
-
-const NavLink = ({ to, isActive, icon, label }: { to: string; isActive: boolean; icon: React.ReactNode; label: string }) => (
-  <Link
-    to={to}
-    className={`px-4 py-2 rounded-full font-medium flex items-center gap-2 transition-colors ${
-      isActive
-        ? "bg-primary text-white"
-        : "hover:bg-bakery-pink text-foreground"
-    }`}
-  >
-    {icon}
-    <span>{label}</span>
-  </Link>
-);
-
-const MobileNavLink = ({ to, isActive, icon, label }: { to: string; isActive: boolean; icon: React.ReactNode; label: string }) => (
-  <Link
-    to={to}
-    className={`flex flex-col items-center p-1 rounded-lg ${
-      isActive ? "text-primary" : "text-muted-foreground"
-    }`}
-  >
-    {icon}
-    <span className="text-xs mt-1">{label}</span>
-  </Link>
-);
 
 export default Navbar;

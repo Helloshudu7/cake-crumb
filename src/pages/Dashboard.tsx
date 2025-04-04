@@ -3,6 +3,7 @@ import { useAppContext } from "@/context/AppContext";
 import { TaskCard } from "@/components/TaskCard";
 import { AddTaskForm } from "@/components/AddTaskForm";
 import { CakeFlavor } from "@/context/AppContext";
+import { UserLevelCard } from "@/components/UserLevelCard";
 
 const Dashboard = () => {
   const { tasks, cakeFlavors } = useAppContext();
@@ -44,27 +45,29 @@ const Dashboard = () => {
         <div className="md:col-span-4">
           <AddTaskForm />
           
+          <UserLevelCard />
+          
           <div className="cake-card mt-6">
             <div className="p-4">
               <h3 className="font-bold text-lg mb-2">Cake Difficulty Rewards</h3>
               <ul className="space-y-2">
                 <li className="flex justify-between items-center">
                   <span>Easy Cakes:</span>
-                  <span className="font-medium">20 coins</span>
+                  <span className="font-medium">20 coins, 10 XP</span>
                 </li>
                 <li className="flex justify-between items-center">
                   <span>Medium Cakes:</span>
-                  <span className="font-medium">50 coins</span>
+                  <span className="font-medium">50 coins, 25 XP</span>
                 </li>
                 <li className="flex justify-between items-center">
                   <span>Hard Cakes:</span>
-                  <span className="font-medium">100 coins</span>
+                  <span className="font-medium">100 coins, 50 XP</span>
                 </li>
               </ul>
               
               <div className="mt-4 pt-4 border-t">
                 <h3 className="font-bold text-lg mb-2">Timer Rewards</h3>
-                <p className="text-sm">Earn 5 berries for every 5 minutes of focused work!</p>
+                <p className="text-sm">Earn 5 berries and 3 XP for every 5 minutes of focused work!</p>
               </div>
             </div>
           </div>

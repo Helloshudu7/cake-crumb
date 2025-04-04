@@ -18,6 +18,16 @@ export type Reward = {
   isCustom?: boolean;
 };
 
+export type Achievement = {
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
+  isUnlocked: boolean;
+  progress?: number;
+  goal?: number;
+};
+
 export type Task = {
   id: string;
   title: string;
@@ -36,6 +46,14 @@ export type TimerSession = {
   duration: number;  // in minutes
   startedAt: Date;
   completedAt: Date | null;
+};
+
+export type UserStats = {
+  level: number;
+  experience: number;
+  experienceToNextLevel: number;
+  streak: number;
+  lastActiveDate: string | null;
 };
 
 type AppContextType = {
@@ -60,6 +78,14 @@ type AppContextType = {
   rewards: Reward[];
   purchaseReward: (id: string) => boolean;
   addCustomReward: (reward: Omit<Reward, 'id' | 'isCustom'>) => void;
+  
+  achievements: Achievement[];
+  unlockAchievement: (id: string) => void;
+  incrementAchievementProgress: (id: string, amount: number) => void;
+  
+  userStats: UserStats;
+  gainExperience: (amount: number) => void;
+  checkAndUpdateStreak: () => void;
   
   currentAnimation: {
     type: 'eat' | 'rot' | null;
@@ -87,6 +113,17 @@ const defaultRewards: Reward[] = [
   { id: 'movie', name: 'Movie Night', description: 'Watch your favorite movie', price: 300, image: '🎬' },
   { id: 'book', name: 'Book Time', description: 'Read a chapter of your book', price: 200, image: '📚' },
   { id: 'nap', name: 'Power Nap', description: 'Take a 20 minute power nap', price: 250, image: '💤' },
+];
+
+// Default achievements
+const defaultAchievements: Achievement[] = [
+  { id: 'first-task', title: 'First Bite', description: 'Complete your first task', icon: '🧁', isUnlocked: false },
+  { id: 'five-tasks', title: 'Cake Enthusiast', description: 'Complete 5 tasks', icon: '🍰', isUnlocked: false, progress: 0, goal: 5 },
+  { id: 'ten-tasks', title: 'Master Baker', description: 'Complete 10 tasks', icon: '👨‍🍳', isUnlocked: false, progress: 0, goal: 10 },
+  { id: 'first-timer', title: 'Focus Time', description: 'Complete a timer session', icon: '⏱️', isUnlocked: false },
+  { id: 'streak-3', title: 'Consistent Baker', description: 'Maintain a 3-day streak', icon: '🔥', isUnlocked: false, progress: 0, goal: 3 },
+  { id: 'streak-7', title: 'Dedication', description: 'Maintain a 7-day streak', icon: '🏆', isUnlocked: false, progress: 0, goal: 7 },
+  { id: 'flavor-collector', title: 'Flavor Collector', description: 'Own 3 different cake flavors', icon: '🎨', isUnlocked: false, progress: 1, goal: 3 },
 ];
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -142,6 +179,22 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return saved ? JSON.parse(saved) : defaultRewards;
   });
   
+  const [achievements, setAchievements] = useState<Achievement[]>(() => {
+    const saved = localStorage.getItem('cakecrumb-achievements');
+    return saved ? JSON.parse(saved) : defaultAchievements;
+  });
+  
+  const [userStats, setUserStats] = useState<UserStats>(() => {
+    const saved = localStorage.getItem('cakecrumb-user-stats');
+    return saved ? JSON.parse(saved) : {
+      level: 1,
+      experience: 0,
+      experienceToNextLevel: 100,
+      streak: 0,
+      lastActiveDate: null,
+    };
+  });
+  
   const [currentAnimation, setCurrentAnimation] = useState<{
     type: 'eat' | 'rot' | null;
     taskId: string | null;
@@ -172,6 +225,19 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     localStorage.setItem('cakecrumb-rewards', JSON.stringify(rewards));
   }, [rewards]);
   
+  useEffect(() => {
+    localStorage.setItem('cakecrumb-achievements', JSON.stringify(achievements));
+  }, [achievements]);
+  
+  useEffect(() => {
+    localStorage.setItem('cakecrumb-user-stats', JSON.stringify(userStats));
+  }, [userStats]);
+  
+  // Check and update streak on component mount
+  useEffect(() => {
+    checkAndUpdateStreak();
+  }, []);
+  
   // Task functions
   const addTask = (task: Omit<Task, 'id' | 'completed' | 'deleted' | 'createdAt' | 'completedAt' | 'deletedAt'>) => {
     const newTask: Task = {
@@ -184,6 +250,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       deletedAt: null,
     };
     setTasks([...tasks, newTask]);
+    
+    // Award XP for creating a task
+    gainExperience(5);
   };
   
   const completeTask = (id: string) => {
@@ -198,19 +267,37 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     if (task) {
       // Different coins based on difficulty
       let coinsEarned = 0;
+      let xpEarned = 0;
+      
       switch (task.difficulty) {
         case 'easy':
           coinsEarned = 20;
+          xpEarned = 10;
           break;
         case 'medium':
           coinsEarned = 50;
+          xpEarned = 25;
           break;
         case 'hard':
           coinsEarned = 100;
+          xpEarned = 50;
           break;
       }
       
       addCoins(coinsEarned);
+      gainExperience(xpEarned);
+      
+      // Check for achievements
+      const completedTasks = tasks.filter(t => t.completed).length + 1; // +1 for current task
+      
+      // First task achievement
+      if (completedTasks === 1) {
+        unlockAchievement('first-task');
+      }
+      
+      // Track progress for multiple task achievements
+      incrementAchievementProgress('five-tasks', 1);
+      incrementAchievementProgress('ten-tasks', 1);
       
       // Show the eat animation
       setCurrentAnimation({ type: 'eat', taskId: id });
@@ -255,7 +342,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     if (timer) {
       // Berries are based on duration - 5 berries per 5 minutes
       const berriesEarned = Math.ceil(timer.duration / 5) * 5;
+      const xpEarned = Math.ceil(timer.duration / 5) * 3;
+      
       addBerries(berriesEarned);
+      gainExperience(xpEarned);
+      
+      // Unlock timer achievement
+      unlockAchievement('first-timer');
     }
   };
   
@@ -280,6 +373,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       f.id === id ? { ...f, owned: true } : f
     ));
     
+    // Check for flavor collector achievement
+    const ownedFlavors = cakeFlavors.filter(f => f.owned).length + 1; // +1 for the just purchased one
+    incrementAchievementProgress('flavor-collector', 1);
+    
     return true;
   };
   
@@ -292,6 +389,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     };
     
     setCakeFlavors([...cakeFlavors, newFlavor]);
+    
+    // Check for flavor collector achievement
+    incrementAchievementProgress('flavor-collector', 1);
   };
   
   const purchaseReward = (id: string) => {
@@ -312,6 +412,122 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     };
     
     setRewards([...rewards, newReward]);
+  };
+  
+  // Achievement functions
+  const unlockAchievement = (id: string) => {
+    const achievement = achievements.find(a => a.id === id);
+    if (!achievement || achievement.isUnlocked) return;
+    
+    setAchievements(achievements.map(a => 
+      a.id === id ? { ...a, isUnlocked: true, progress: a.goal } : a
+    ));
+    
+    // Reward XP for unlocking an achievement
+    gainExperience(25);
+  };
+  
+  const incrementAchievementProgress = (id: string, amount: number) => {
+    const achievement = achievements.find(a => a.id === id);
+    if (!achievement || achievement.isUnlocked || achievement.progress === undefined || achievement.goal === undefined) return;
+    
+    const newProgress = (achievement.progress + amount);
+    const isComplete = newProgress >= achievement.goal;
+    
+    setAchievements(achievements.map(a => 
+      a.id === id 
+        ? { 
+            ...a, 
+            progress: newProgress, 
+            isUnlocked: isComplete 
+          } 
+        : a
+    ));
+    
+    // If achievement is completed by this increment, reward XP
+    if (isComplete) {
+      gainExperience(25);
+    }
+  };
+  
+  // User stats functions
+  const gainExperience = (amount: number) => {
+    const newExperience = userStats.experience + amount;
+    let newLevel = userStats.level;
+    let newExperienceToNextLevel = userStats.experienceToNextLevel;
+    
+    // Level up if enough XP
+    if (newExperience >= userStats.experienceToNextLevel) {
+      newLevel += 1;
+      
+      // Formula for XP needed for next level - increases with each level
+      newExperienceToNextLevel = Math.floor(100 * (1.2 ** newLevel));
+      
+      // Reward for leveling up
+      addCoins(newLevel * 50);
+      addBerries(newLevel * 10);
+    }
+    
+    setUserStats({
+      ...userStats,
+      level: newLevel,
+      experience: newExperience > userStats.experienceToNextLevel ? newExperience - userStats.experienceToNextLevel : newExperience,
+      experienceToNextLevel: newExperienceToNextLevel,
+    });
+  };
+  
+  const checkAndUpdateStreak = () => {
+    const today = new Date().toISOString().split('T')[0];
+    
+    if (!userStats.lastActiveDate) {
+      // First time user - start streak
+      setUserStats({
+        ...userStats,
+        streak: 1,
+        lastActiveDate: today,
+      });
+      return;
+    }
+    
+    if (userStats.lastActiveDate === today) {
+      // Already marked as active today
+      return;
+    }
+    
+    const lastActive = new Date(userStats.lastActiveDate);
+    const currentDate = new Date(today);
+    
+    // Calculate days between
+    const timeDiff = currentDate.getTime() - lastActive.getTime();
+    const dayDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+    
+    if (dayDiff === 1) {
+      // Consecutive day - increase streak
+      const newStreak = userStats.streak + 1;
+      setUserStats({
+        ...userStats,
+        streak: newStreak,
+        lastActiveDate: today,
+      });
+      
+      // Check streak achievements
+      if (newStreak === 3) {
+        unlockAchievement('streak-3');
+      }
+      if (newStreak === 7) {
+        unlockAchievement('streak-7');
+      }
+      
+      // Bonus for maintaining streak
+      addCoins(newStreak * 5);
+    } else if (dayDiff > 1) {
+      // Streak broken
+      setUserStats({
+        ...userStats,
+        streak: 1,
+        lastActiveDate: today,
+      });
+    }
   };
   
   // Animation control
@@ -341,6 +557,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     rewards,
     purchaseReward,
     addCustomReward,
+    
+    achievements,
+    unlockAchievement,
+    incrementAchievementProgress,
+    
+    userStats,
+    gainExperience,
+    checkAndUpdateStreak,
     
     currentAnimation,
     clearAnimation,
