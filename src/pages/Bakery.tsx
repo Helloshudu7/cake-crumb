@@ -25,12 +25,16 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { CakeFlavor } from "@/context/AppContext";
 
 const addFlavorSchema = z.object({
   name: z.string().min(1, "Name is required"),
   color: z.string().min(1, "Color is required"),
   price: z.coerce.number().min(0, "Price must be at least 0"),
 });
+
+// Define the form values type to match what's required by addCustomCakeFlavor
+type AddFlavorFormValues = Omit<CakeFlavor, "id" | "owned" | "isCustom">;
 
 const Bakery = () => {
   const { cakeFlavors, berries, purchaseCakeFlavor, addCustomCakeFlavor } = useAppContext();
@@ -82,7 +86,14 @@ const Bakery = () => {
   };
   
   const onSubmitAddFlavor = (values: z.infer<typeof addFlavorSchema>) => {
-    addCustomCakeFlavor(values);
+    // Ensure values passed to addCustomCakeFlavor meet the required type
+    const flavorData: AddFlavorFormValues = {
+      name: values.name,
+      color: values.color,
+      price: values.price,
+    };
+    
+    addCustomCakeFlavor(flavorData);
     toast({
       title: "Flavor Added!",
       description: `${values.name} has been added to your flavors.`,

@@ -20,6 +20,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { Reward } from "@/context/AppContext";
 
 const addRewardSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -27,6 +28,9 @@ const addRewardSchema = z.object({
   price: z.coerce.number().min(1, "Price must be at least 1"),
   image: z.string().min(1, "Emoji is required"),
 });
+
+// Define the form values type to match what's required by addCustomReward
+type AddRewardFormValues = Omit<Reward, "id" | "isCustom">;
 
 const Rewards = () => {
   const { rewards, coins, purchaseReward, addCustomReward, userStats } = useAppContext();
@@ -80,7 +84,15 @@ const Rewards = () => {
   };
   
   const onSubmitAddReward = (values: z.infer<typeof addRewardSchema>) => {
-    addCustomReward(values);
+    // Ensure values passed to addCustomReward meet the required type
+    const rewardData: AddRewardFormValues = {
+      name: values.name,
+      description: values.description,
+      price: values.price,
+      image: values.image,
+    };
+    
+    addCustomReward(rewardData);
     toast({
       title: "Reward Added!",
       description: `${values.name} has been added to your rewards shop.`,
