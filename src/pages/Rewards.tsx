@@ -107,7 +107,7 @@ const Rewards = () => {
         <h1 className="text-3xl font-bold text-primary mb-2">Rewards Shop</h1>
         <p className="text-muted-foreground">Treat yourself after completing your tasks!</p>
         <div className="mt-4 inline-flex items-center px-4 py-2 bg-bakery-yellow rounded-full">
-          <Coins size={16} className="text-amber-500 mr-2" />
+          <Coins size={16} className="text-amber-500 mr-2 drop-shadow-sm" strokeWidth={1.5} />
           <span className="font-bold">{coins} Coins Available</span>
         </div>
       </div>
@@ -115,7 +115,7 @@ const Rewards = () => {
       <div className="max-w-md mx-auto mb-8">
         <div className="flex justify-between items-center text-sm mb-1">
           <div className="flex items-center gap-1">
-            <Star size={14} className="text-amber-500" />
+            <Star size={14} className="text-amber-500 drop-shadow-sm" strokeWidth={1.5} />
             <span>Level {userStats.level}</span>
           </div>
           <span>XP: {userStats.experience} / {userStats.experienceToNextLevel}</span>
@@ -129,12 +129,12 @@ const Rewards = () => {
       <div className="dashboard-section">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold flex items-center">
-            <Gift className="mr-2" />
+            <Gift className="mr-2 text-pink-500 drop-shadow-sm" strokeWidth={1.5} />
             Available Rewards
           </h2>
           
           <Button onClick={() => setShowAddRewardDialog(true)} variant="outline" className="flex items-center gap-2">
-            <Plus size={16} />
+            <Plus size={16} className="text-green-500" />
             <span>Add Custom Reward</span>
           </Button>
         </div>
@@ -152,7 +152,7 @@ const Rewards = () => {
         
         <div className="mt-8 p-4 border border-bakery-yellow bg-bakery-yellow/20 rounded-lg">
           <h3 className="font-bold flex items-center mb-2">
-            <AlertTriangle size={18} className="mr-2 text-amber-500" />
+            <AlertTriangle size={18} className="mr-2 text-amber-500" strokeWidth={1.5} />
             How to Earn Coins
           </h3>
           <p className="text-sm">
@@ -296,8 +296,9 @@ const RewardCard = ({
 }) => {
   return (
     <Card className="overflow-hidden">
-      <div className="p-4 h-24 flex items-center justify-center bg-gradient-to-r from-bakery-lavender/50 to-bakery-pink/50">
-        <span className="text-5xl">{reward.image}</span>
+      <div className="p-4 h-24 flex items-center justify-center bg-gradient-to-r from-bakery-lavender/50 to-bakery-pink/50 relative">
+        <span className="text-5xl filter drop-shadow-md">{reward.image}</span>
+        <div className="absolute inset-0 bg-white/5 backdrop-blur-[0.5px]"></div>
       </div>
       
       <CardContent className="pt-4">
@@ -306,7 +307,7 @@ const RewardCard = ({
         </div>
         
         <div className="flex items-center gap-1 mb-2">
-          <Coins size={16} className="text-amber-500" />
+          <Coins size={16} className="text-amber-500 drop-shadow-sm" strokeWidth={1.5} />
           <span>{reward.price} Coins</span>
         </div>
         

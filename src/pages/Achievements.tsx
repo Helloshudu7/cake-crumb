@@ -34,7 +34,7 @@ const Achievements = () => {
         
         <div className="mt-6 flex flex-col items-center">
           <div className="flex gap-2 items-center mb-3">
-            <Trophy className="text-bakery-yellow" />
+            <Trophy className="text-amber-500 drop-shadow-sm" strokeWidth={1.5} />
             <span className="font-bold">{unlockedCount} / {totalAchievements} Unlocked</span>
           </div>
           
@@ -68,7 +68,7 @@ const Achievements = () => {
         </div>
         
         <div className="mt-4 inline-flex items-center px-4 py-2 bg-bakery-pink rounded-full">
-          <Star className="text-amber-500 mr-2" size={18} />
+          <Star className="text-amber-500 mr-2 drop-shadow-sm" size={18} strokeWidth={1.5} />
           <span className="font-bold">Level {userStats.level}</span>
         </div>
       </div>
@@ -99,7 +99,13 @@ const AchievementCard = ({ achievement }: { achievement: any }) => {
             "w-14 h-14 flex items-center justify-center rounded-full text-3xl",
             isLocked ? "bg-muted" : "bg-bakery-pink/20"
           )}>
-            {isLocked ? <Lock size={24} className="text-muted-foreground" /> : achievement.icon}
+            {isLocked ? (
+              <Lock size={24} className="text-muted-foreground" strokeWidth={1.5} />
+            ) : (
+              typeof achievement.icon === 'string' ? achievement.icon : (
+                <Medal className="text-amber-500" strokeWidth={1.5} />
+              )
+            )}
           </div>
           
           <div className="flex-1">
@@ -110,7 +116,7 @@ const AchievementCard = ({ achievement }: { achievement: any }) => {
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button variant="ghost" size="icon" className="h-6 w-6">
-                      <Info size={14} />
+                      <Info size={14} className="text-blue-500" />
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>
@@ -139,7 +145,7 @@ const AchievementCard = ({ achievement }: { achievement: any }) => {
             
             {achievement.isUnlocked && (
               <div className="flex items-center gap-1 mt-2 text-xs text-green-600">
-                <Award size={14} />
+                <Award size={14} className="drop-shadow-sm" strokeWidth={2} />
                 <span>Unlocked</span>
               </div>
             )}

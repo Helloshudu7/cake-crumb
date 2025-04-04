@@ -124,7 +124,7 @@ const Bakery = () => {
       <div className="dashboard-section">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold flex items-center">
-            <ShoppingBag className="mr-2" />
+            <ShoppingBag className="mr-2 text-amber-600 drop-shadow-sm" />
             Cake Flavors
           </h2>
           
@@ -133,7 +133,7 @@ const Bakery = () => {
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button variant="ghost" size="icon">
-                    <Info size={20} />
+                    <Info size={20} className="text-blue-500" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
@@ -146,7 +146,7 @@ const Bakery = () => {
             </TooltipProvider>
             
             <Button onClick={() => setShowAddFlavorDialog(true)} variant="outline" className="flex items-center gap-2">
-              <Plus size={16} />
+              <Plus size={16} className="text-green-500" />
               <span>Add Custom Flavor</span>
             </Button>
           </div>
@@ -274,7 +274,11 @@ const FlavorCard = ({
         background: typeof flavor.color === 'string' ? flavor.color : '#FEF7CD',
         boxShadow: "inset 0 -10px 10px -10px rgba(0,0,0,0.1)"
       }}>
-        <Cake size={40} className="text-white drop-shadow-md" />
+        <Cake 
+          size={40} 
+          className="text-white drop-shadow-md filter saturate-150" 
+          strokeWidth={1.5}
+        />
       </div>
       
       <CardContent className="pt-4">
@@ -282,7 +286,7 @@ const FlavorCard = ({
           <h3 className="font-bold text-lg">{flavor.name}</h3>
           {flavor.owned && (
             <div className="flex items-center gap-1 text-green-600 text-sm">
-              <Check size={16} />
+              <Check size={16} strokeWidth={2.5} className="drop-shadow-sm" />
               <span>Owned</span>
             </div>
           )}

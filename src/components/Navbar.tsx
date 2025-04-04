@@ -14,11 +14,31 @@ const Navbar = () => {
   };
   
   const navLinks = [
-    { path: "/", label: "Dashboard", icon: Home },
-    { path: "/fridge", label: "Fridge", icon: Refrigerator },
-    { path: "/bakery", label: "Bakery", icon: Cake },
-    { path: "/rewards", label: "Rewards", icon: ShoppingBag },
-    { path: "/achievements", label: "Achievements", icon: Award },
+    { 
+      path: "/", 
+      label: "Dashboard", 
+      icon: (props: any) => <Home {...props} className={cn(props.className, "text-blue-500")} /> 
+    },
+    { 
+      path: "/fridge", 
+      label: "Fridge", 
+      icon: (props: any) => <Refrigerator {...props} className={cn(props.className, "text-cyan-600")} /> 
+    },
+    { 
+      path: "/bakery", 
+      label: "Bakery", 
+      icon: (props: any) => <Cake {...props} className={cn(props.className, "text-pink-500")} /> 
+    },
+    { 
+      path: "/rewards", 
+      label: "Rewards", 
+      icon: (props: any) => <ShoppingBag {...props} className={cn(props.className, "text-amber-600")} /> 
+    },
+    { 
+      path: "/achievements", 
+      label: "Achievements", 
+      icon: (props: any) => <Award {...props} className={cn(props.className, "text-purple-600")} /> 
+    },
   ];
   
   return (
@@ -26,7 +46,7 @@ const Navbar = () => {
       <div className="container flex h-14 items-center">
         <div className="mr-4 hidden md:flex">
           <Link to="/" className="mr-6 flex items-center space-x-2">
-            <Cake className="h-6 w-6" />
+            <Cake className="h-6 w-6 text-primary drop-shadow-sm" strokeWidth={1.5} />
             <span className="hidden font-bold sm:inline-block">
               CakeCrumb
             </span>
@@ -77,7 +97,7 @@ const Navbar = () => {
                   isActive(link.path) ? "text-primary bg-primary/10" : ""
                 )}
               >
-                <link.icon size={18} />
+                <link.icon size={18} strokeWidth={1.8} className="drop-shadow-sm" />
                 <span className="text-xs">{link.label}</span>
               </Button>
             </Link>
