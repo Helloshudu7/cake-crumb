@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useAppContext } from "@/context/AppContext";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Gift, Coins, PartyPopper, AlertTriangle } from "lucide-react";
+import { Gift, Coins, PartyPopper, AlertTriangle, Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import {
   Dialog,
@@ -13,12 +13,36 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+
+const addRewardSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  description: z.string().min(1, "Description is required"),
+  price: z.coerce.number().min(1, "Price must be at least 1"),
+  image: z.string().min(1, "Emoji is required"),
+});
 
 const Rewards = () => {
-  const { rewards, coins, purchaseReward } = useAppContext();
+  const { rewards, coins, purchaseReward, addCustomReward } = useAppContext();
   const { toast } = useToast();
   const [redeemingReward, setRedeemingReward] = useState<any | null>(null);
   const [showDialog, setShowDialog] = useState(false);
+  const [showAddRewardDialog, setShowAddRewardDialog] = useState(false);
+  
+  const form = useForm<z.infer<typeof addRewardSchema>>({
+    resolver: zodResolver(addRewardSchema),
+    defaultValues: {
+      name: "",
+      description: "",
+      price: 100,
+      image: "🎁",
+    },
+  });
   
   const handlePurchase = (id: string) => {
     const reward = rewards.find(r => r.id === id);
@@ -51,6 +75,16 @@ const Rewards = () => {
     }
   };
   
+  const onSubmitAddReward = (values: z.infer<typeof addRewardSchema>) => {
+    addCustomReward(values);
+    toast({
+      title: "Reward Added!",
+      description: `${values.name} has been added to your rewards shop.`,
+    });
+    setShowAddRewardDialog(false);
+    form.reset();
+  };
+  
   return (
     <div className="container mx-auto py-6">
       <div className="text-center mb-8">
@@ -68,6 +102,11 @@ const Rewards = () => {
             <Gift className="mr-2" />
             Available Rewards
           </h2>
+          
+          <Button onClick={() => setShowAddRewardDialog(true)} variant="outline" className="flex items-center gap-2">
+            <Plus size={16} />
+            <span>Add Custom Reward</span>
+          </Button>
         </div>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
@@ -126,6 +165,90 @@ const Rewards = () => {
               Redeem Now
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Add Custom Reward Dialog */}
+      <Dialog open={showAddRewardDialog} onOpenChange={setShowAddRewardDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center">
+              <Gift className="mr-2 text-primary" size={20} />
+              Add Custom Reward
+            </DialogTitle>
+            <DialogDescription>
+              Create your own reward to motivate yourself!
+            </DialogDescription>
+          </DialogHeader>
+          
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmitAddReward)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Reward Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Movie Night" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Description</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Watch your favorite movie" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="price"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Price (coins)</FormLabel>
+                      <FormControl>
+                        <Input type="number" min="1" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="image"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Emoji</FormLabel>
+                      <FormControl>
+                        <Input placeholder="🎬" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              
+              <DialogFooter>
+                <Button type="button" variant="outline" onClick={() => setShowAddRewardDialog(false)}>
+                  Cancel
+                </Button>
+                <Button type="submit">Add Reward</Button>
+              </DialogFooter>
+            </form>
+          </Form>
         </DialogContent>
       </Dialog>
     </div>

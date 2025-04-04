@@ -1,4 +1,3 @@
-
 import React, { createContext, useState, useContext, useEffect } from 'react';
 
 export type CakeFlavor = {
@@ -7,6 +6,7 @@ export type CakeFlavor = {
   color: string;
   price: number;
   owned: boolean;
+  isCustom?: boolean;
 };
 
 export type Reward = {
@@ -15,6 +15,7 @@ export type Reward = {
   description: string;
   price: number;
   image: string;
+  isCustom?: boolean;
 };
 
 export type Task = {
@@ -54,9 +55,11 @@ type AppContextType = {
   
   cakeFlavors: CakeFlavor[];
   purchaseCakeFlavor: (id: string) => boolean;
+  addCustomCakeFlavor: (flavor: Omit<CakeFlavor, 'id' | 'owned' | 'isCustom'>) => void;
   
   rewards: Reward[];
   purchaseReward: (id: string) => boolean;
+  addCustomReward: (reward: Omit<Reward, 'id' | 'isCustom'>) => void;
   
   currentAnimation: {
     type: 'eat' | 'rot' | null;
@@ -280,6 +283,17 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return true;
   };
   
+  const addCustomCakeFlavor = (flavor: Omit<CakeFlavor, 'id' | 'owned' | 'isCustom'>) => {
+    const newFlavor: CakeFlavor = {
+      ...flavor,
+      id: `custom-${Date.now()}`,
+      owned: true,
+      isCustom: true,
+    };
+    
+    setCakeFlavors([...cakeFlavors, newFlavor]);
+  };
+  
   const purchaseReward = (id: string) => {
     const reward = rewards.find(r => r.id === id);
     if (!reward || coins < reward.price) {
@@ -288,6 +302,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     
     setCoins(prev => prev - reward.price);
     return true;
+  };
+  
+  const addCustomReward = (reward: Omit<Reward, 'id' | 'isCustom'>) => {
+    const newReward: Reward = {
+      ...reward,
+      id: `custom-${Date.now()}`,
+      isCustom: true,
+    };
+    
+    setRewards([...rewards, newReward]);
   };
   
   // Animation control
@@ -312,9 +336,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     
     cakeFlavors,
     purchaseCakeFlavor,
+    addCustomCakeFlavor,
     
     rewards,
     purchaseReward,
+    addCustomReward,
     
     currentAnimation,
     clearAnimation,
