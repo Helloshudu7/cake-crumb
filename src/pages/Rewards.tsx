@@ -103,12 +103,24 @@ const Rewards = () => {
   
   return (
     <div className="container mx-auto py-6">
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-primary mb-2">Rewards Shop</h1>
-        <p className="text-muted-foreground">Treat yourself after completing your tasks!</p>
-        <div className="mt-4 inline-flex items-center px-4 py-2 bg-bakery-yellow rounded-full">
-          <Coins size={16} className="text-amber-500 mr-2 drop-shadow-sm" strokeWidth={1.5} />
-          <span className="font-bold">{coins} Coins Available</span>
+      {/* Menu header with decorative elements */}
+      <div className="relative bg-bakery-peach/30 p-8 rounded-2xl mb-8 shadow-md max-w-4xl mx-auto">
+        <div className="absolute inset-0 opacity-10 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxnIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCI+CiAgICAgICAgPGcgZmlsbD0iI0ZGRiIgZmlsbC1vcGFjaXR5PSIxIj4KICAgICAgICAgICAgPHBhdGggZD0iTTM2IDM0aDR2MWgtNHYtMXptLS0yaDN2MWgtM3YtMXptLTEwIDJoM3YxaC0zdi0xem0tMyAxaDN2MWgtM3YtMXptLTMgMGgzdjFoLTN2LTF6bTIxLTNoM3YxaC0zdi0xem0tNCAxaDR2MWgtNHYtMXptLTEzLTFoM3YxaC0zdi0xem0tNCAwaDN2MWgtM3YtMXptMTkgMGgzdjFoLTN2LTF6Ii8+CiAgICAgICAgPC9nPgogICAgPC9nPgo8L3N2Zz4=')]"></div>
+        
+        {/* Decorative corners */}
+        <div className="absolute top-0 left-0 w-16 h-16 border-t-4 border-l-4 border-bakery-pink rounded-tl-2xl"></div>
+        <div className="absolute top-0 right-0 w-16 h-16 border-t-4 border-r-4 border-bakery-pink rounded-tr-2xl"></div>
+        <div className="absolute bottom-0 left-0 w-16 h-16 border-b-4 border-l-4 border-bakery-pink rounded-bl-2xl"></div>
+        <div className="absolute bottom-0 right-0 w-16 h-16 border-b-4 border-r-4 border-bakery-pink rounded-br-2xl"></div>
+        
+        <div className="text-center relative z-10">
+          <h1 className="text-4xl font-bold text-primary mb-3">Sweet Rewards Menu</h1>
+          <p className="text-muted-foreground mb-5">Treat yourself after completing your tasks!</p>
+          
+          <div className="inline-flex items-center px-6 py-3 bg-bakery-yellow/40 rounded-full border-2 border-bakery-yellow/60 shadow-md">
+            <Coins size={20} className="text-amber-500 mr-3 drop-shadow-sm" strokeWidth={1.5} />
+            <span className="font-bold text-lg">{coins} Coins Available</span>
+          </div>
         </div>
       </div>
       
@@ -126,11 +138,11 @@ const Rewards = () => {
         </p>
       </div>
       
-      <div className="dashboard-section">
+      <div className="dashboard-section max-w-5xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold flex items-center">
             <Gift className="mr-2 text-pink-500 drop-shadow-sm" strokeWidth={1.5} />
-            Available Rewards
+            Menu Options
           </h2>
           
           <Button onClick={() => setShowAddRewardDialog(true)} variant="outline" className="flex items-center gap-2">
@@ -139,18 +151,24 @@ const Rewards = () => {
           </Button>
         </div>
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          {rewards.map((reward) => (
-            <RewardCard
-              key={reward.id}
-              reward={reward}
-              onPurchase={handlePurchase}
-              canAfford={coins >= reward.price}
-            />
-          ))}
+        {/* Menu items in a decorative paper-like background */}
+        <div className="relative p-6 bg-amber-50 rounded-xl border border-amber-100 shadow-inner">
+          {/* Menu texture */}
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxnIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCI+CiAgICAgICAgPGcgZmlsbD0iIzAwMCIgZmlsbC1vcGFjaXR5PSIwLjAyIj4KICAgICAgICAgICAgPHBhdGggZD0iTTIwIDM1YzguMjg0IDAgMTUtNi43MTYgMTUtMTUgMC04LjI4NC02LjcxNi0xNS0xNS0xNS04LjI4NCAwLTE1IDYuNzE2LTE1IDE1IDAgOC4yODQgNi43MTYgMTUgMTUgMTV6bTAgMmMtOS45NDEgMC0xOC04LjA1OS0xOC0xOFMxMC4wNTkgMSAyMCAxYzkuOTQxIDAgMTggOC4wNTkgMTggMThzLTguMDU5IDE4LTE4IDE4eiIvPgogICAgICAgIDwvZz4KICAgIDwvZz4KPC9zdmc+')] opacity-50"></div>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {rewards.map((reward) => (
+              <RewardCard
+                key={reward.id}
+                reward={reward}
+                onPurchase={handlePurchase}
+                canAfford={coins >= reward.price}
+              />
+            ))}
+          </div>
         </div>
         
-        <div className="mt-8 p-4 border border-bakery-yellow bg-bakery-yellow/20 rounded-lg">
+        <div className="mt-8 p-4 border border-bakery-yellow bg-bakery-yellow/30 rounded-lg">
           <h3 className="font-bold flex items-center mb-2">
             <AlertTriangle size={18} className="mr-2 text-amber-500" strokeWidth={1.5} />
             How to Earn Coins
@@ -295,13 +313,23 @@ const RewardCard = ({
   canAfford: boolean;
 }) => {
   return (
-    <Card className="overflow-hidden">
-      <div className="p-4 h-24 flex items-center justify-center bg-gradient-to-r from-bakery-lavender/50 to-bakery-pink/50 relative">
+    <Card className="overflow-hidden hover:shadow-lg transition-shadow border-dashed border-2 border-bakery-peach/50">
+      {/* Menu item with decorative elements */}
+      <div className="p-4 h-24 flex items-center justify-center bg-gradient-to-r from-bakery-lavender/40 to-bakery-pink/40 relative">
+        {/* Price tag effect */}
+        <div className="absolute -top-1 -right-1 w-16 h-16">
+          <div className="absolute transform rotate-45 bg-bakery-yellow w-16 h-8 -translate-y-1/2 translate-x-1/2 flex items-center justify-center shadow-sm">
+            <span className="font-bold text-xs">{reward.price}</span>
+          </div>
+        </div>
+        
         <span className="text-5xl filter drop-shadow-md">{reward.image}</span>
-        <div className="absolute inset-0 bg-white/5 backdrop-blur-[0.5px]"></div>
       </div>
       
-      <CardContent className="pt-4">
+      <CardContent className="pt-4 bg-white relative">
+        {/* Decorative dotted line */}
+        <div className="absolute left-0 right-0 top-0 border-t-2 border-dashed border-gray-200"></div>
+        
         <div className="flex justify-between items-center mb-1">
           <h3 className="font-bold text-lg">{reward.name}</h3>
         </div>
@@ -316,14 +344,14 @@ const RewardCard = ({
         </p>
       </CardContent>
       
-      <CardFooter className="pt-0">
+      <CardFooter className="pt-0 bg-white">
         <Button 
           onClick={() => onPurchase(reward.id)} 
           className="w-full"
           disabled={!canAfford}
           variant={canAfford ? "default" : "outline"}
         >
-          {canAfford ? "Redeem Reward" : "Not Enough Coins"}
+          {canAfford ? "Order Now" : "Not Enough Coins"}
         </Button>
       </CardFooter>
     </Card>

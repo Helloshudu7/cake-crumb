@@ -104,13 +104,20 @@ const Bakery = () => {
   
   return (
     <div className="container mx-auto py-6">
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-primary mb-2">The Bakery</h1>
-        <p className="text-muted-foreground">Purchase new cake flavors with your berries</p>
-        <div className="mt-4 inline-flex items-center px-4 py-2 bg-bakery-pink rounded-full">
-          <span className="text-pink-500 mr-2">🍓</span>
-          <span className="font-bold">{berries} Berries Available</span>
+      {/* Bakery storefront header */}
+      <div className="relative mb-12 rounded-2xl overflow-hidden bg-gradient-to-b from-bakery-pink to-bakery-peach p-8 shadow-lg">
+        <div className="absolute inset-0 opacity-10 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxnIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCI+CiAgICAgICAgPGcgZmlsbD0iI0ZGRiIgZmlsbC1vcGFjaXR5PSIxIj4KICAgICAgICAgICAgPHBhdGggZD0iTTM2IDM0aDR2MWgtNHYtMXptLS0yaDN2MWgtM3YtMXptLTEwIDJoM3YxaC0zdi0xem0tMyAxaDN2MWgtM3YtMXptLTMgMGgzdjFoLTN2LTF6bTIxLTNoM3YxaC0zdi0xem0tNCAxaDR2MWgtNHYtMXptLTEzLTFoM3YxaC0zdi0xem0tNCAwaDN2MWgtM3YtMXptMTkgMGgzdjFoLTN2LTF6Ii8+CiAgICAgICAgPC9nPgogICAgPC9nPgo8L3N2Zz4=')]"></div>
+        <div className="text-center relative z-10">
+          <h1 className="text-4xl font-bold text-white drop-shadow-md mb-4">The Cake Bakery</h1>
+          <p className="text-white/90 text-lg mb-4">Purchase new cake flavors with your berries</p>
+          <div className="mt-4 inline-flex items-center px-6 py-3 bg-white rounded-full shadow-md">
+            <span className="text-pink-500 text-xl mr-3">🍓</span>
+            <span className="font-bold text-lg">{berries} Berries Available</span>
+          </div>
         </div>
+        
+        {/* Decorative bakery awning */}
+        <div className="absolute top-0 left-0 right-0 h-8 bg-bakery-pink/70 border-b-4 border-dashed border-white/30"></div>
       </div>
       
       <div className="max-w-md mx-auto mb-8">
@@ -152,18 +159,24 @@ const Bakery = () => {
           </div>
         </div>
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          {cakeFlavors.map((flavor) => (
-            <FlavorCard
-              key={flavor.id}
-              flavor={flavor}
-              onPurchase={handlePurchase}
-              canAfford={berries >= flavor.price}
-            />
-          ))}
+        {/* Bakery display case */}
+        <div className="relative p-6 mb-6 rounded-xl bg-amber-50 shadow-inner border border-amber-200">
+          {/* Bakery glass effect */}
+          <div className="absolute inset-x-0 top-0 h-10 bg-gradient-to-b from-white/40 to-transparent"></div>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            {cakeFlavors.map((flavor) => (
+              <FlavorCard
+                key={flavor.id}
+                flavor={flavor}
+                onPurchase={handlePurchase}
+                canAfford={berries >= flavor.price}
+              />
+            ))}
+          </div>
         </div>
         
-        <div className="mt-8 p-4 border border-bakery-yellow bg-bakery-yellow/20 rounded-lg">
+        <div className="mt-8 p-4 border border-bakery-yellow bg-bakery-yellow/30 rounded-lg">
           <h3 className="font-bold flex items-center mb-2">
             <AlertTriangle size={18} className="mr-2 text-amber-500" />
             How to Earn Berries
@@ -177,7 +190,7 @@ const Bakery = () => {
       
       {/* Add Custom Flavor Dialog */}
       <Dialog open={showAddFlavorDialog} onOpenChange={setShowAddFlavorDialog}>
-        <DialogContent>
+        <DialogContent className="bg-white">
           <DialogHeader>
             <DialogTitle className="flex items-center">
               <Cake className="mr-2 text-primary" size={20} />
@@ -238,7 +251,7 @@ const Bakery = () => {
               <div className="pt-4">
                 <p className="text-sm text-muted-foreground mb-2">Preview:</p>
                 <div 
-                  className="w-full h-16 rounded-md flex items-center justify-center"
+                  className="w-full h-16 rounded-md flex items-center justify-center shadow-inner"
                   style={{ backgroundColor: form.watch("color") }}
                 >
                   <Cake size={32} className="text-white drop-shadow-md" />
@@ -269,19 +282,22 @@ const FlavorCard = ({
   canAfford: boolean;
 }) => {
   return (
-    <Card className="overflow-hidden">
-      <div className="p-4 h-20 flex items-center justify-center" style={{
+    <Card className="overflow-hidden hover:shadow-lg transition-shadow border-2 border-transparent hover:border-bakery-pink/50">
+      <div className="p-4 h-24 flex items-center justify-center relative" style={{
         background: typeof flavor.color === 'string' ? flavor.color : '#FEF7CD',
         boxShadow: "inset 0 -10px 10px -10px rgba(0,0,0,0.1)"
       }}>
+        {/* Cake plate effect */}
+        <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 w-24 h-6 bg-white/40 rounded-full blur-md"></div>
+        
         <Cake 
           size={40} 
-          className="text-white drop-shadow-md filter saturate-150" 
+          className="text-white drop-shadow-md filter saturate-150 relative z-10" 
           strokeWidth={1.5}
         />
       </div>
       
-      <CardContent className="pt-4">
+      <CardContent className="pt-6 bg-white">
         <div className="flex justify-between items-center mb-1">
           <h3 className="font-bold text-lg">{flavor.name}</h3>
           {flavor.owned && (
@@ -305,7 +321,7 @@ const FlavorCard = ({
       </CardContent>
       
       {!flavor.owned && (
-        <CardFooter className="pt-0">
+        <CardFooter className="pt-0 bg-white">
           <Button 
             onClick={() => onPurchase(flavor.id)} 
             className="w-full"
